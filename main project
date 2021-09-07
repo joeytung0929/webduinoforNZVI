@@ -1,0 +1,361 @@
+(async function () {
+
+var linebot;
+var max44009;
+var relay_C_sonic;
+var servo;
+var relay;
+var webduino_for_NZVI;
+var abs_;
+var ppm;
+
+function get_date(t) {
+  var varDay = new Date(),
+    varYear = varDay.getFullYear(),
+    varMonth = varDay.getMonth() + 1,
+    varDate = varDay.getDate();
+  var varNow;
+  if (t == "ymd") {
+    varNow = varYear + "/" + varMonth + "/" + varDate;
+  } else if (t == "mdy") {
+    varNow = varMonth + "/" + varDate + "/" + varYear;
+  } else if (t == "dmy") {
+    varNow = varDate + "/" + varMonth + "/" + varYear;
+  } else if (t == "y") {
+    varNow = varYear;
+  } else if (t == "m") {
+    varNow = varMonth;
+  } else if (t == "d") {
+    varNow = varDate;
+  }
+  return varNow;
+}
+
+function get_time(t) {
+  var varTime = new Date(),
+    varHours = varTime.getHours(),
+    varMinutes = varTime.getMinutes(),
+    varSeconds = varTime.getSeconds();
+  var varNow;
+  if (t == "hms") {
+    varNow = varHours + ":" + varMinutes + ":" + varSeconds;
+  } else if (t == "h") {
+    varNow = varHours;
+  } else if (t == "m") {
+    varNow = varMinutes;
+  } else if (t == "s") {
+    varNow = varSeconds;
+  }
+  return varNow;
+}
+
+
+var firebase1ca6d;
+var flag1ca6d=true;
+linebot = {token:'tuCgOfdCv+jmPgozquRti4PS0aYqseQ8Ly/wpuBT5yVLkxRJd+gXsv3d9kxlOjNA+MJuBqHatGixVTnmKRjGqgbNe+eBONlaIP4kdXT9HjVtNg6Cwtqx8IWwoMprMbSuHavIE5saU+PPOPfBXlKSEAdB04t89/1O/w1cDnyilFU=',userId:'U8efe9210ef8ad062f7215cb8a9f007c1',onVal:''};
+firebase1ca6d = new Firebase('https://webduino-linebot-1ca6d.firebaseio.com/');
+webduino_for_NZVI= {};
+webduino_for_NZVI.sheetUrl = 'https://docs.google.com/spreadsheets/d/1i4ol4Ar-Th-HrEWvyOFw-Xao_CW8Ip4ogi_YIKn-Gok/edit?usp=sharing';
+webduino_for_NZVI.sheetName = '工作表1';
+firebase1ca6d.on('value',function(s){
+  var msg1ca6d=false;
+  if(flag1ca6d){
+    flag1ca6d=false;
+    return;
+  }
+  else {
+    s.forEach(function(e){
+      if(e.val().userid===linebot.userId && e.val().message!==''){
+        linebot.onVal = e.val().message;
+        msg1ca6d=true;}
+    });
+    if(!msg1ca6d) return;
+  }
+  if (linebot.onVal == '你好') {
+    line_bot($.extend({},linebot,{message:'很高興認識你~'}));
+  } else if (linebot.onVal == '掰掰') {
+    line_bot($.extend({},linebot,{message:'再見啦!'}));
+  }
+});
+webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+webduino_for_NZVI.column1 = '程式上線';
+webduino_for_NZVI.column2 = '使用者行為';
+webduino_for_NZVI.column3 = 1;
+writeSheetData(webduino_for_NZVI);
+window.alert('按下確認以開始');
+
+if (window.readyBoardLength) {
+  window.readyBoardLength = window.readyBoardLength + 1;
+} else {
+  window.readyBoardLength = 1;
+}
+
+boardReady({board: 'Smart', device: '10dW8Mgy', transport: 'mqtt'}, async function (board) {
+  board.samplingInterval = 50;
+  if (500 < Math.round(ppm) && Math.round(ppm) <= 999) {
+    relay.on();
+    await delay(4);
+    relay.off();
+    line_bot($.extend({},linebot,{message:'已根據染料濃度自動添加NZVI'}));
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '自動添加NZVI';
+    webduino_for_NZVI.column2 = 'Webduino根據染料濃度行為';
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  } else if (300 < Math.round(ppm) && Math.round(ppm) <= 500) {
+    relay.on();
+    await delay(3);
+    relay.off();
+    line_bot($.extend({},linebot,{message:'已根據染料濃度自動添加NZVI'}));
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '自動添加NZVI';
+    webduino_for_NZVI.column2 = 'Webduino根據染料濃度行為';
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  } else if (100 < Math.round(ppm) && Math.round(ppm) <= 300) {
+    relay.on();
+    await delay(2);
+    relay.off();
+    line_bot($.extend({},linebot,{message:'已根據染料濃度自動添加NZVI'}));
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '自動添加NZVI';
+    webduino_for_NZVI.column2 = 'Webduino根據染料濃度行為';
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  } else if (30 <= Math.round(ppm) && Math.round(ppm) <= 100) {
+    relay.on();
+    await delay(1);
+    relay.off();
+    line_bot($.extend({},linebot,{message:'已根據染料濃度自動添加NZVI'}));
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '自動添加NZVI';
+    webduino_for_NZVI.column2 = 'Webduino根據染料濃度行為';
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  } else {
+    relay.off();
+  }
+  firebase1ca6d.on('value',function(s){
+    var msg1ca6d=false;
+    if(flag1ca6d){
+      flag1ca6d=false;
+      return;
+    }
+    else {
+      s.forEach(function(e){
+        if(e.val().userid===linebot.userId && e.val().message!==''){
+          linebot.onVal = e.val().message;
+          msg1ca6d=true;}
+      });
+      if(!msg1ca6d) return;
+    }
+    if (linebot.onVal == '開始加入NZVI') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      relay.on();
+      webduino_for_NZVI.column0 = '磁鐵入水';
+      webduino_for_NZVI.column1 = '開始加入NZVI';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    } else if (linebot.onVal == '停止加入NZVI') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      relay.off();
+      webduino_for_NZVI.column0 = [get_date("ymd"),'',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '停止加入NZVI';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    }
+  });
+  if (window.boardReadyNumber) {
+    window.boardReadyNumber = window.boardReadyNumber + 1;
+  } else {
+    window.boardReadyNumber = 1;
+  }
+  allBoardReady(window.boardReadyNumber);
+});
+
+if (window.readyBoardLength) {
+  window.readyBoardLength = window.readyBoardLength + 1;
+} else {
+  window.readyBoardLength = 1;
+}
+
+boardReady({board: 'Smart', device: '10VDgWay', transport: 'mqtt'}, async function (board) {
+  board.samplingInterval = 50;
+  max44009 = getMAX44009(board,4,5);
+  max44009.on(async function(_lux){
+    max44009._lux = _lux;
+    abs_ = max44009._lux;
+    ppm = (-2500 * abs_) / 23737 + 311550 / 3391;
+  });
+  if ((Math.round((ppm)*10))/10 >= 30) {
+    setTimeout(async function () {
+      line_bot($.extend({},linebot,{message:'警告!染料濃度超標! 請立即處理!'}));
+      line_bot($.extend({},linebot,{packageId:8525,stickerId:16581311}));
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '危險偵測';
+      webduino_for_NZVI.column2 = (Math.round((ppm)*10))/10;
+      webduino_for_NZVI.column3 = 0;
+      writeSheetData(webduino_for_NZVI);
+    }, 1000 * 20);
+  }
+  webduino_for_NZVI= {};
+  webduino_for_NZVI.sheetUrl = 'https://docs.google.com/spreadsheets/d/1i4ol4Ar-Th-HrEWvyOFw-Xao_CW8Ip4ogi_YIKn-Gok/edit?usp=sharing';
+  webduino_for_NZVI.sheetName = '工作表1';
+  setInterval(async function () {
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '定期偵測';
+    webduino_for_NZVI.column2 = (Math.round((ppm)*10))/10;
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  }, 1000 * 120);
+  firebase1ca6d.on('value',function(s){
+    var msg1ca6d=false;
+    if(flag1ca6d){
+      flag1ca6d=false;
+      return;
+    }
+    else {
+      s.forEach(function(e){
+        if(e.val().userid===linebot.userId && e.val().message!==''){
+          linebot.onVal = e.val().message;
+          msg1ca6d=true;}
+      });
+      if(!msg1ca6d) return;
+    }
+    if (linebot.onVal == '染料濃度') {
+      line_bot($.extend({},linebot,{message:(String('染料濃度為:') + String((Math.round((ppm)*10))/10))}));
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '使用者查詢ppm';
+      webduino_for_NZVI.column2 = (Math.round((ppm)*10))/10;
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    } else if (linebot.onVal == '光照度') {
+      line_bot($.extend({},linebot,{message:(String('光照度為:') + String((Math.round((abs_)*10))/10))}));
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '使用者查詢lux';
+      webduino_for_NZVI.column2 = (Math.round((abs_)*10))/10;
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    }
+  });
+  if (window.boardReadyNumber) {
+    window.boardReadyNumber = window.boardReadyNumber + 1;
+  } else {
+    window.boardReadyNumber = 1;
+  }
+  allBoardReady(window.boardReadyNumber);
+});
+
+if (window.readyBoardLength) {
+  window.readyBoardLength = window.readyBoardLength + 1;
+} else {
+  window.readyBoardLength = 1;
+}
+
+boardReady({board: 'Smart', device: '10Q3wnPQ', transport: 'mqtt'}, async function (board) {
+  board.samplingInterval = 50;
+  relay_C_sonic = getRelay(board, 10);
+  firebase1ca6d.on('value',function(s){
+    var msg1ca6d=false;
+    if(flag1ca6d){
+      flag1ca6d=false;
+      return;
+    }
+    else {
+      s.forEach(function(e){
+        if(e.val().userid===linebot.userId && e.val().message!==''){
+          linebot.onVal = e.val().message;
+          msg1ca6d=true;}
+      });
+      if(!msg1ca6d) return;
+    }
+    if (linebot.onVal == '開啟超音波') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      relay.on();
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '開啟超音波';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    } else if (linebot.onVal == '關閉超音波') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      relay.off();
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '關閉超音波';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    }
+  });
+  if (window.boardReadyNumber) {
+    window.boardReadyNumber = window.boardReadyNumber + 1;
+  } else {
+    window.boardReadyNumber = 1;
+  }
+  allBoardReady(window.boardReadyNumber);
+});
+
+if (window.readyBoardLength) {
+  window.readyBoardLength = window.readyBoardLength + 1;
+} else {
+  window.readyBoardLength = 1;
+}
+
+boardReady({board: 'Smart', device: '10QY2kgd', transport: 'mqtt'}, async function (board) {
+  board.samplingInterval = 50;
+  servo = getServo(board, 10);
+  if (Math.round(ppm) <= 30) {
+    servo.angle = 175;
+    line_bot($.extend({},linebot,{message:'已根據染料濃度自動吸附NZVI'}));
+    await delay(120);
+    servo.angle = 5;
+    line_bot($.extend({},linebot,{message:'自動吸附NZVI完成'}));
+    webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+    webduino_for_NZVI.column1 = '自動吸附NZVI';
+    webduino_for_NZVI.column2 = 'Webduino根據染料濃度行為';
+    webduino_for_NZVI.column3 = 0;
+    writeSheetData(webduino_for_NZVI);
+  }
+  firebase1ca6d.on('value',function(s){
+    var msg1ca6d=false;
+    if(flag1ca6d){
+      flag1ca6d=false;
+      return;
+    }
+    else {
+      s.forEach(function(e){
+        if(e.val().userid===linebot.userId && e.val().message!==''){
+          linebot.onVal = e.val().message;
+          msg1ca6d=true;}
+      });
+      if(!msg1ca6d) return;
+    }
+    if (linebot.onVal == '磁鐵入水') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      servo.angle = 175;
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '磁鐵入水';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    } else if (linebot.onVal == '磁鐵離水') {
+      line_bot($.extend({},linebot,{message:'收到!'}));
+      servo.angle = 5;
+      webduino_for_NZVI.column0 = [get_date("ymd"),'_',get_time("hms")].join('');
+      webduino_for_NZVI.column1 = '磁鐵離水';
+      webduino_for_NZVI.column2 = '使用者行為';
+      webduino_for_NZVI.column3 = 1;
+      writeSheetData(webduino_for_NZVI);
+    }
+  });
+  if (window.boardReadyNumber) {
+    window.boardReadyNumber = window.boardReadyNumber + 1;
+  } else {
+    window.boardReadyNumber = 1;
+  }
+  allBoardReady(window.boardReadyNumber);
+});
+
+}());
